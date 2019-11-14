@@ -1,0 +1,156 @@
+<html>
+  <head>
+    <title>Todo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        font-family: system-ui, sans-serif;
+      }
+      .title {
+        text-align: center;
+      }
+      .todo-input {
+        border: 1px solid #eee;
+        border-radius: 10px;
+        width: 300px;
+        height: 45px;
+        padding-left: 20px;
+        font-size: 1.2rem;
+        box-shadow: 0 4px 10px 0px rgba(0, 0, 0, 0.1);
+      }
+      .todo-input:focus {
+        outline: none;
+        border-color: blue;
+        box-shadow: 0 4px 12px 5px rgba(0, 0, 0, 0.1);
+      }
+      .list-container {
+        box-shadow: 0 4px 12px 5px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+        padding: 20px 10px;
+        margin-top: 30px;
+      }
+      .todo-list {
+        list-style: none;
+        padding: 0;
+      }
+      .todo-list > li {
+        display: flex;
+        justify-content: space-between;
+      }
+      .todo-list > li:nth-child(odd) {
+        background-color: rgba(0, 0, 0, 0.05);
+        padding: 10px 20px;
+      }
+      .todo-list > li:nth-child(even) {
+        background-color: rgba(0, 0, 0, 0.08);
+        padding: 10px 20px;
+      }
+      .btn-container {
+        display: flex;
+        justify-content: flex-end;
+      }
+      .btn {
+        padding: 5px 15px;
+        border-radius: 5px;
+        text-transform: uppercase;
+        background-color: white;
+        margin: 5px 10px;
+        position: relative;
+        overflow: hidden;
+      }
+      .btn:after{
+        position: absolute;
+        content: '';
+        display: block;
+        width: 1px;
+        height: 1px;
+        top: 50%;
+        left: 50%;
+        background-color: #eee;
+        transition: transform 0.6s, opacity 0.6s;
+        opacity: 1;
+      }
+      .btn:active::after{
+       transform: scale(200);
+       opacity: 0;
+      }
+      .btn:focus {
+        outline: none;
+        border: 1px solid blue;
+        box-shadow: 0 4px 12px 4px rgba(0, 0, 0, 0.1);
+      }
+      .save {
+        border: 1px solid green;
+        color: green;
+      }
+      .clear {
+        border: 1px solid red;
+        color: red;
+      }
+    </style>
+    <script>
+      window.addEventListener("DOMContentLoaded", e => {
+        console.log("loaded");
+        const todoInput = document.querySelector(".todo-input");
+        const todoList = document.querySelector(".todo-list");
+        const clearBtn = document.querySelector(".clear");
+        const saveBtn = document.querySelector(".save");
+
+        const savedTodoList = localStorage.getItem("todolist");
+        if (savedTodoList) {
+          todoList.innerHTML = savedTodoList;
+        }
+
+        todoInput.addEventListener("keypress", e => {
+          if (e.keyCode === 13) {
+            const todoEle = document.createElement("li");
+            const todoEleInnerHtml = `<input type="checkbox" /><span> ${e.target.value}</span> <button class="delete btn">del</button>`;
+            todoEle.innerHTML = todoEleInnerHtml;
+            todoList.appendChild(todoEle);
+            todoInput.value = "";
+          }
+        });
+
+        todoList.addEventListener("click", e => {
+          if (e.target.className === "delete") {
+            e.target.parentNode.parentNode.removeChild(e.target.parentNode);
+          } else {
+            if (e.target.checked) {
+              e.target.nextSibling.style.textDecoration = "line-through";
+            }
+            if (e.target.checked === false) {
+              e.target.nextSibling.style.textDecoration = "unset";
+            }
+          }
+        });
+
+        clearBtn.addEventListener("click", e => {
+          todoList.innerHTML = "";
+          localStorage.removeItem("todolist");
+        });
+
+        saveBtn.addEventListener("click", e => {
+          localStorage.setItem("todolist", todoList.innerHTML);
+        });
+      });
+    </script>
+
+    <script>
+    </script>
+  </head>
+  <body>
+    <main>
+      <h1 class="title">TODO LIST</h1>
+      <input class="todo-input" placeholder="Enter new todo" type="text" />
+      <div class="list-container">
+        <ul class="todo-list"></ul>
+        <div class="btn-container">
+          <button class="save btn">Save</button>
+          <button class="clear btn">Clear</button>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
