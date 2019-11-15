@@ -1,7 +1,7 @@
 /*
-LINKED LIST: 
+DOUBLY LINKED LIST: 
 It is linear data structure(kind of list), in which each data point(genrally called Node) is connected
-to previous data point through some link(reference to memory address).
+to next and previous data point through some link(reference to memory address).
 
 PROS:
 1. Efficient insertion and deletion
@@ -23,6 +23,7 @@ class Node {
   constructor(data) {
     this.data = data;
     this.next = null;
+    this.prev = null;
   }
 }
 
@@ -54,6 +55,7 @@ class LinkedList {
       current = current.next;
     }
     current.next = node;
+    node.prev = current;
   }
 
   // insert data at begining of list
@@ -61,52 +63,58 @@ class LinkedList {
     console.log("prepend", data);
     const node = new Node(data);
     if (this.head === null) {
-      return (this.head = null);
+      this.head = node
+      return;
     }
     node.next = this.head;
+    this.head.prev = node;
     this.head = node;
   }
 
   // delete data
   delete(data) {
-    let msg = `delete ${data}: `
+    let msg = `delete ${data}: `;
     if (this.head === null) {
-      console.log(msg + 'error,head is null')
+      console.log(msg + "error,head is null");
       return;
     }
     if (this.head.data === data) {
       this.head = this.head.next;
-      console.log(msg + 'success')
+      this.head.prev = null;
+      console.log(msg + "success");
       return;
     }
     let current = this.head;
-    let prev = this.head;
     while (current !== null) {
-      if(current.data === data){
-        prev.next = prev.next.next
-        console.log(msg + 'success')
-        return
+      if (current.data === data) {
+        if(current.next === null){
+          current.prev.next = null;
+        }else{
+          current.next.prev = current.prev;
+          current.prev.next = current.next;
+        }
+        console.log(msg + "success");
+        return;
       }
-      prev = current;
       current = current.next;
     }
-    console.log(msg + 'error, not found')
-    return
+    console.log(msg + "error, not found");
+    return;
   }
 
   // search data
   search(data) {
-    let msg = `search ${data}: `
+    let msg = `search ${data}: `;
     let current = this.head;
     while (current.next !== null) {
       if (current.data === data) {
-        console.log(msg + true)
+        console.log(msg + true);
         return true;
       }
       current = current.next;
     }
-    console.log(msg + false)
-    return false
+    console.log(msg + false);
+    return false;
   }
 }
 
@@ -120,15 +128,14 @@ ll.append(13);
 ll.append(11);
 ll.print();
 
-ll.search(12)
-ll.search(22)
+ll.search(12);
+ll.search(22);
 
-
-ll.delete(12)
-ll.delete(2)
-ll.delete(11)
-ll.delete(22)
-ll.print()
+ll.delete(12);
+ll.delete(2);
+ll.delete(11);
+ll.delete(22);
+ll.print();
 
 ll.prepend(15);
 ll.print();
