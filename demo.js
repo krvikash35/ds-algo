@@ -33,17 +33,17 @@ class LinkedList {
 
   print() {
     let current = this.head;
-    let result = "";
+    let result = [];
     while (current !== null) {
-      result = result + "->" + current.data;
+      result.push(current.data);
       current = current.next;
     }
-    console.log(result);
+    console.log("print", result.join("->"));
   }
 
   // insert data at end of list
   append(data) {
-    console.log('append', data)
+    console.log("append", data);
     const node = new Node(data);
     if (this.head === null) {
       this.head = node;
@@ -58,6 +58,7 @@ class LinkedList {
 
   // insert data at begining of list
   prepend(data) {
+    console.log("prepend", data);
     const node = new Node(data);
     if (this.head === null) {
       return (this.head = null);
@@ -68,19 +69,44 @@ class LinkedList {
 
   // delete data
   delete(data) {
+    let msg = `delete ${data}: `
     if (this.head === null) {
+      console.log(msg + 'error,head is null')
       return;
     }
     if (this.head.data === data) {
       this.head = this.head.next;
+      console.log(msg + 'success')
+      return;
     }
     let current = this.head;
-    let prev = null;
-    while (current.next !== null && current.data !== data) {
+    let prev = this.head;
+    while (current !== null) {
+      if(current.data === data){
+        prev.next = prev.next.next
+        console.log(msg + 'success')
+        return
+      }
       prev = current;
       current = current.next;
     }
-    prev.next = prev.next.next;
+    console.log(msg + 'error, not found')
+    return
+  }
+
+  // search data
+  search(data) {
+    let msg = `search ${data}: `
+    let current = this.head;
+    while (current.next !== null) {
+      if (current.data === data) {
+        console.log(msg + true)
+        return true;
+      }
+      current = current.next;
+    }
+    console.log(msg + false)
+    return false
   }
 }
 
@@ -89,12 +115,20 @@ const ll = new LinkedList();
 ll.append(2);
 ll.append(12);
 ll.append(1);
+ll.append(31);
+ll.append(13);
+ll.append(11);
 ll.print();
+
+ll.search(12)
+ll.search(22)
+
+
+ll.delete(12)
+ll.delete(2)
+ll.delete(11)
+ll.delete(22)
+ll.print()
 
 ll.prepend(15);
-ll.print();
-
-ll.delete(2);
-ll.print();
-ll.delete(1);
 ll.print();
