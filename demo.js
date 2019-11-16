@@ -1,61 +1,111 @@
-class HashTable {
-  constructor(size = 20) {
-    this.bucket = Array(size).fill(null);
-    this.keys = {};
+class Heap {
+  constructor() {
+    this.items = [];
+  }
+  // return the first element
+  peek() {
+    if (this.items.length === 0) {
+      return null;
+    }
+    return items[0];
   }
 
-  //return hash number for given string, sum of charcode and its position
-  _hash(key) {
-    const hash = Array.from(key).reduce(
-      (result, char, index) => result + char.charCodeAt(0)+index,
-      0
-    );
-    return hash % this.bucket.length;
+  // delete the first element
+  poll() {
+    if (this.items.length === 0) {
+      return;
+    }
+    if (this.items.length === 1) {
+      return this.items.pop();
+    }
+    const data = this.items[0];
+    this.items[0] = this.items.pop();
+    this._heapifyDown();
+    return data;
   }
 
-  set(key, value) {
-    const keyHash = this._hash(key);
-    this.keys[key] = keyHash;
-    this.bucket[keyHash] = value;
+  // add to last
+  add(data) {
+    this.items.push(data);
+    this._heapifyUp();
   }
 
-  get(key) {
-    return this.bucket[this._hash(key)];
+  _heapifyDown() {
+    let current = 0;
+    while (true) {
+      if (this._hasLeft(current)) {
+        const leftIndex = this._getLeft(current);
+        if (this.items[current] > this.items[leftIndex]) {
+          this._swap(current, leftIndex);
+          current = leftIndex;
+          continue;
+        }
+      }
+      if (this._hasRight(current)) {
+        const rightIndex = this._getRight(current);
+        if (this.items[current] > this.items[rightIndex]) {
+          this._swap(current, rightIndex);
+          current = rightIndex;
+          continue;
+        }
+      }
+      break;
+    }
   }
 
-  delete(key) {
-    this.bucket[this._hash(key)] = null;
-    delete this.keys[key];
+  _heapifyUp() {
+    let current = this.items.length - 1;
+    while (current > 0) {
+      const parentIndex = this._getParentIndex(current);
+      if (this.items[current] < this.items[parentIndex]) {
+        this._swap(current, parentIndex);
+      } else {
+        break;
+      }
+      current = parentIndex;
+    }
   }
 
-  has(key) {
-    return this.keys.hasOwnProperty(key);
+  _swap(first, second) {
+    const temp = this.items[first];
+    this.items[first] = this.items[second];
+    this.items[second] = temp;
   }
 
-  print() {
-    const msg = this.bucket.reduce(
-      (result, data, index) => result + index + "->" + data+', ',
-      ""
-    );
-    console.log("print: ", msg);
+  _getParentIndex(index) {
+    return Math.floor((index - 1) / 2);
   }
+
+  _hasLeft(index) {
+    return this._getLeft(index) < this.items.length;
+  }
+
+  _hasRight(index) {
+    return this._getRight(index) < this.items.length;
+  }
+
+  _getLeft(index) {
+    return index * 2 + 1;
+  }
+
+  _getRight(index) {
+    return index * 2 + 2;
+  }
+
+  print() {}
 }
 
-const ht  = new HashTable()
+const heap = new Heap();
 
-let r ;
+heap.add(10);
+heap.add(20);
+heap.add(30);
+console.log(heap);
 
-ht.set('vikash', {name: 'vikash'})
-ht.set('koushik', 'koushik')
-ht.set('keffy', 'Keffy bansal')
-ht.print()
+heap.add(15);
+console.log(heap);
+heap.add(5);
+console.log(heap);
 
-r = ht.get('vikash')
-console.log('get vikash:', r)
-r = ht.get('keffy')
-console.log('get keffy:', r)
-
-r = ht.has('keffy')
-console.log('has keffy:', r)
-r = ht.has('keffy1')
-console.log('has keffy1:', r)
+heap.poll()
+console.log(heap)

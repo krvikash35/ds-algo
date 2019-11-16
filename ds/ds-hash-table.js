@@ -1,3 +1,15 @@
+/*
+HASH TABLE: Array like data structure. It uses array to store the value and hash function to generate index from key.
+For a given key and value, in which array index this value should be placed, is determined by the hash function.
+
+PROS & CONS: if hash function is good then insertion, deletion and search is very efficient(O(1)), otherwise O(n)
+
+COMPLEXITY:
+set: O(1)
+get: O(1)
+delete: O(1)
+
+*/
 class HashTable {
     constructor(size = 20) {
       this.bucket = Array(size).fill(null);
